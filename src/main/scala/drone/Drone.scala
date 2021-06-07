@@ -1,11 +1,8 @@
-import akka.Done
+package drone
 
-import scala.util.Random
-import akka.stream.alpakka.amqp._
-import akka.stream.alpakka.amqp.javadsl.AmqpFlow
-import akka.stream.scaladsl.Flow
+import play.api.libs.json._
 
-import scala.concurrent.Future;
+import scala.util.Random;
 
 case class Point(lat: Double, lon: Double)
 
@@ -23,15 +20,29 @@ class Drone(id: String, location: Point)
 }
 
 object Main {
-  def main(args: Array[String]): Unit = {
+
+  def generateReport():JsValue = {
     val id = Random.alphanumeric.filter(!_.isDigit).take(10).mkString
     val point = new Point(Random.between(-10.0, 10.0), Random.between(-10.0, 10.0))
     val d = new Drone(id, point)
-    val r = d.createDummyReport()
+    val report = d.createDummyReport()
 
-    val queueName = "amqp-conn-it-spec-simple-queue-" + System.currentTimeMillis()
-    val queueDeclaration = QueueDeclaration(queueName)
-    val connectionProvider = AmqpLocalConnectionProvider
+    implicit val citizenWrites: OWrites[Citizen] = Json.writes[Citizen]
+    implicit val pointWrites: OWrites[Point] = Json.writes[Point]
+    implicit val reportWrites: OWrites[Report] = Json.writes[Report]
+    val reportJson: JsValue = Json.toJson(report)
+
+    reportJson
+  }
+
+  def main(args: Array[String]): Unit = {
+    val reportJson: JsValue = generateReport()
+
+    reportJson
+
+//    val queueName = "amqp-conn-it-spec-simple-queue-" + System.currentTimeMillis()
+//    val queueDeclaration = QueueDeclaration(queueName)
+//    val connectionProvider = AmqpLocalConnectionProvider
 
 //    val settings = AmqpWriteSettings(connectionProvider)
 //      .withRoutingKey(queueName)

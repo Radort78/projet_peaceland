@@ -1,0 +1,13 @@
+{
+  "id": "142455",
+  "latitude": "47.15545",
+  "longitude": "2.1464615",
+  "peoples": [
+    { "name": "Martin", "surname": "Théodule", "score": "12"}
+  ],
+  "words": [
+    {"word": "héhé"},
+    {"word": "haha"},
+    {"word": "hoho"}
+  ]
+}

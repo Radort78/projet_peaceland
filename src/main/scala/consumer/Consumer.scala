@@ -1,11 +1,10 @@
-import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecords, KafkaConsumer, OffsetAndMetadata}
-import org.apache.kafka.common.TopicPartition
-
-import java.util.{Map, Properties}
-import scala.collection.JavaConverters._
-import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
-
+package consumer
+import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecords, KafkaConsumer}
+import org.apache.kafka.common.serialization.StringDeserializer
+import play.api.libs.json.JsValue
+import collection.JavaConverters._
 import java.time.Duration
+import java.util.Properties
 
 object Consumer {
   def main(args: Array[String]): Unit = {
@@ -17,7 +16,7 @@ object Consumer {
     props.put(ConsumerConfig.GROUP_ID_CONFIG, "myconsumergroup")
 
     val consumer: KafkaConsumer[String, String] = new KafkaConsumer[String, String](props)
-    consumer.subscribe(List("atopic", "my_topic_1", "my_topic_2").asJava)
+    consumer.subscribe(List("atopic", "my_topic_1", "my_topic_2", "person").asJava)
 
     val records: ConsumerRecords[String, String] = consumer.poll(Duration.ofMillis(1000))
     println(records.count())
@@ -27,8 +26,8 @@ object Consumer {
 
     consumer.commitSync()
 
-//    consumer.commitAsync((offsets: Map[TopicPartition, OffsetAndMetadata], exception: Exception) => {
-//      println("toto")
-//    })
+    //    consumer.commitAsync((offsets: Map[TopicPartition, OffsetAndMetadata], exception: Exception) => {
+    //      println("toto")
+    //    })
   }
 }
